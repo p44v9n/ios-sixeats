@@ -1,0 +1,25 @@
+## About this app
+
+This is a simple iOS app that allows a user to add a widget to their homescreen to log each of their eating times in a day.
+
+The widget is a 4x1 horizontal widget (medium size)
+
+The widget features six checkboxes for:
+
+- Morning Snack
+- Lunch
+- Afternoon Snack
+- Dinner
+- Evening Snack
+
+The left side of the widget should show a time since field with the time since the last radio option was clicked.
+
+The background of the widget should slowly fill up as time progresses up til 3 hours. When the time since last eat hits 3 hours the message should change to go eat.
+
+When a new day starts the widget should reset - timer resets to 0 and all items are unchecked.
+
+The app itself doesn't need to do anything for now except prompt the user to add the widget to their homepage.
+
+Please check the code you've written is working at each step by trying to build the app.
+
+Use the iPhone 16 simulator when testing
