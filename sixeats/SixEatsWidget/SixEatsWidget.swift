@@ -80,6 +80,7 @@ struct DataManager {
             print("⚠️ Widget: Unable to access app group UserDefaults")
             return [] 
         }
+        checkAndResetIfNewDay()
         return userDefaults.stringArray(forKey: "checkedItems") ?? []
     }
     
@@ -117,6 +118,44 @@ struct DataManager {
         
         // Force immediate sync
         userDefaults.synchronize()
+    }
+    
+    private func checkAndResetIfNewDay() {
+        guard let userDefaults = userDefaults else {
+            print("⚠️ Widget: Unable to access app group UserDefaults for reset check")
+            return
+        }
+        
+        let calendar = Calendar.current
+        let today = Date()
+        
+        // Get the last reset date
+        let lastResetDate = userDefaults.object(forKey: "lastResetDate") as? Date
+        
+        // If no reset date exists, or if it's a new calendar day, reset the checked items
+        if let lastReset = lastResetDate {
+            if !calendar.isDate(today, inSameDayAs: lastReset) {
+                resetForNewDay()
+            }
+        } else {
+            // First time - set the reset date but don't clear items
+            userDefaults.set(today, forKey: "lastResetDate")
+        }
+    }
+    
+    private func resetForNewDay() {
+        guard let userDefaults = userDefaults else {
+            print("⚠️ Widget: Unable to access app group UserDefaults for reset")
+            return
+        }
+        
+        // Clear checked items for the new day
+        userDefaults.set([], forKey: "checkedItems")
+        // Update the last reset date
+        userDefaults.set(Date(), forKey: "lastResetDate")
+        userDefaults.synchronize()
+        
+        print("📅 Widget: Reset checked items for new calendar day")
     }
 }
 
@@ -173,7 +212,7 @@ struct SixEatsWidgetEntryView : View {
     
     private func shouldShowGoEat() -> Bool {
         let timeSince = timeSinceLastEat()
-        return timeSince.hours >= 3 || (timeSince.hours == 2 && timeSince.minutes >= 30)
+        return timeSince.hours >= 4 || (timeSince.hours == 3 && timeSince.minutes >= 30)
     }
 
     var body: some View {
@@ -187,19 +226,37 @@ struct SixEatsWidgetEntryView : View {
                         let timeSince = timeSinceLastEat()
                         
                         if shouldShowGoEat() {
-                            Text("Go eat!")
-                                .font(.system(size: 20, weight: .bold, design: .rounded))
-                                .foregroundColor(.red)
+                            HStack(spacing: 4) {
+                                Text("Go eat!")
+                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .foregroundColor(.red)
+                                
+                                Button(intent: RefreshIntent()) {
+                                    Image(systemName: "arrow.clockwise")
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.secondary)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
                             
                             Text("\(timeSince.hours)h \(timeSince.minutes)m")
                                 .font(.system(size: 10, weight: .medium))
                                 .foregroundColor(.secondary)
                         } else {
-                            Text("\(timeSince.hours)h \(timeSince.minutes)m")
-                                .font(.system(size: 20, weight: .bold, design: .rounded))
-                                .foregroundColor(.primary)
+                            HStack(spacing: 4) {
+                                Text("\(timeSince.hours)h \(timeSince.minutes)m")
+                                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                                    .foregroundColor(.primary)
+                                
+                                Button(intent: RefreshIntent()) {
+                                    Image(systemName: "arrow.clockwise")
+                                        .font(.system(size: 12, weight: .medium))
+                                        .foregroundColor(.secondary)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                            }
                             
-                            Text("Since last eat")
+                            Text("since you last ate")
                                 .font(.system(size: 10, weight: .medium))
                                 .foregroundColor(.secondary)
                                 .multilineTextAlignment(.center)
@@ -260,22 +317,6 @@ struct SixEatsWidgetEntryView : View {
                 
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            
-            // Refresh icon in top left corner
-            VStack {
-                HStack {
-                    Button(intent: RefreshIntent()) {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.system(size: 12, weight: .medium))
-                            .foregroundColor(.secondary)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    Spacer()
-                }
-                Spacer()
-            }
-            .padding(8)
         }
     }
 }
