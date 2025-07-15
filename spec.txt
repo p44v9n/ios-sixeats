@@ -5,12 +5,12 @@ This is a simple iOS app that allows a user to add a widget to their homescreen 
 The widget is a 4x1 horizontal widget (medium size)
 
 The widget features six checkboxes for:
-
-- Morning Snack
+- Breakfast
+- Snack 1
 - Lunch
-- Afternoon Snack
+- Snack 2
 - Dinner
-- Evening Snack
+- Snack 3
 
 The left side of the widget should show a time since field with the time since the last radio option was clicked.
 

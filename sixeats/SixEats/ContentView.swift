@@ -26,76 +26,66 @@ struct OnboardingScreen: View {
     let onNext: () -> Void
     
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                // Background gradient
-                LinearGradient(
-                    gradient: backgroundGradient,
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+        ZStack {
+            // Background image
+            Image(backgroundImageName)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
+            
+            VStack(spacing: 0) {
+                // Top spacer
+                Spacer()
                 
-                VStack(spacing: 40) {
-                    Spacer()
-                    
-                    // Icon
-                    Image(systemName: iconName)
-                        .font(.system(size: 60, weight: .light))
+                // Icon
+                Image(systemName: iconName)
+                    .font(.system(size: 60, weight: .light))
+                    .foregroundColor(.white)
+                
+                // Middle spacer
+                Spacer()
+                
+                // Text content
+                VStack(spacing: 20) {
+                    Text(titleText)
+                        .font(.title2)
+                        .fontWeight(.medium)
                         .foregroundColor(.white)
-                    
-                    Spacer()
-                    
-                    // Text content
-                    VStack(spacing: 20) {
-                        Text(titleText)
-                            .font(.title2)
-                            .fontWeight(.medium)
-                            .foregroundColor(.white)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 40)
-                            .lineLimit(nil)
-                    }
-                    
-                    Spacer()
-                    
-                    // Button
-                    Button(action: onNext) {
-                        Text(buttonText)
-                            .font(.headline)
-                            .fontWeight(.medium)
-                            .foregroundColor(buttonTextColor)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 50)
-                            .background(buttonBackgroundColor)
-                            .cornerRadius(12)
-                    }
-                    .padding(.horizontal, 40)
-                    .padding(.bottom, 50)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 40)
+                        .lineLimit(nil)
                 }
+                
+                // Bottom spacer
+                Spacer()
+                
+                // Button
+                Button(action: onNext) {
+                    Text(buttonText)
+                        .font(.headline)
+                        .fontWeight(.medium)
+                        .foregroundColor(buttonTextColor)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .background(buttonBackgroundColor)
+                        .cornerRadius(12)
+                }
+                .padding(.horizontal, 40)
+                .padding(.bottom, 50)
             }
         }
     }
     
-    private var backgroundGradient: Gradient {
+    private var backgroundImageName: String {
         switch screenIndex {
         case 0:
-            return Gradient(colors: [
-                Color(red: 0.58, green: 0.4, blue: 0.9),
-                Color(red: 0.9, green: 0.5, blue: 0.8)
-            ])
+            return "Background1"
         case 1:
-            return Gradient(colors: [
-                Color(red: 0.9, green: 0.4, blue: 0.6),
-                Color(red: 0.4, green: 0.3, blue: 0.8)
-            ])
+            return "Background2"
         case 2:
-            return Gradient(colors: [
-                Color(red: 0.9, green: 0.5, blue: 0.6),
-                Color(red: 0.3, green: 0.4, blue: 0.9)
-            ])
+            return "Background3"
         default:
-            return Gradient(colors: [Color.blue, Color.purple])
+            return "Background1"
         }
     }
     
@@ -136,7 +126,7 @@ struct WidgetInstructionView: View {
     var body: some View {
         ZStack {
             // Background image (contains the phone mockup)
-            Image("BackgroundImage")
+            Image("BackgroundWithPhone")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
@@ -211,6 +201,34 @@ struct FeatureItem: View {
 struct BottomSheetView: View {
     @Environment(\.dismiss) private var dismiss
     
+    // Detect iOS version
+    private var isIOS18OrLater: Bool {
+        if #available(iOS 18.0, *) {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    private var instructions: [(number: Int, text: String)] {
+        if isIOS18OrLater {
+            return [
+                (1, "Long press on your home screen"),
+                (2, "Tap the 'Edit' button in the top left"),
+                (3, "Tap the '+' button to add widgets"),
+                (4, "Search for SixEats in the widget gallery"),
+                (5, "Tap 'Add Widget' and position it on your home screen")
+            ]
+        } else {
+            return [
+                (1, "Long press on your home screen"),
+                (2, "Tap the '+' button in the top left"),
+                (3, "Search for SixEats in the widget gallery"),
+                (4, "Tap 'Add Widget' and position it on your home screen")
+            ]
+        }
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             // Drag handle
@@ -230,12 +248,32 @@ struct BottomSheetView: View {
             
             // Instructions list
             VStack(alignment: .leading, spacing: 20) {
-                InstructionItem(number: 1, text: "Long press on your home screen")
-                InstructionItem(number: 2, text: "Tap the + button in the top left")
-                InstructionItem(number: 3, text: "Search for SixEats in the widget gallery")
-                InstructionItem(number: 4, text: "Tap 'Add Widget' and position it on your home screen")
+                ForEach(instructions, id: \.number) { instruction in
+                    InstructionItem(number: instruction.number, text: instruction.text)
+                }
             }
             .padding(.horizontal, 24)
+            
+            // // Additional tip for iOS 18
+            // if isIOS18OrLater {
+            //     VStack(alignment: .leading, spacing: 8) {
+            //         HStack {
+            //             Image(systemName: "lightbulb")
+            //                 .foregroundColor(.orange)
+            //                 .font(.caption)
+            //             Text("Quick tip:")
+            //                 .font(.caption)
+            //                 .fontWeight(.medium)
+            //                 .foregroundColor(.gray)
+            //         }
+            //         Text("You can also long press directly on the SixEats app icon and select a widget size to instantly add it!")
+            //             .font(.caption)
+            //             .foregroundColor(.gray)
+            //             .multilineTextAlignment(.leading)
+            //     }
+            //     .padding(.horizontal, 24)
+            //     .padding(.top, 20)
+            // }
             
             Spacer()
         }

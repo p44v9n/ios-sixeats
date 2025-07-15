@@ -21,7 +21,7 @@ struct Provider: AppIntentTimelineProvider {
     typealias Intent = ConfigurationAppIntent
     
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), lastEatDate: Date(), checkedItems: ["Breakfast", "Morning snack"])
+        SimpleEntry(date: Date(), lastEatDate: Date(), checkedItems: ["Breakfast", "Snack 1"])
     }
 
     func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> SimpleEntry {
@@ -161,7 +161,7 @@ struct SixEatsWidgetEntryView : View {
     var entry: Provider.Entry
     
     private let mainMeals = ["Breakfast", "Lunch", "Dinner"]
-    private let snacks = ["Morning snack", "Afternoon snack", "Evening snack"]
+    private let snacks = ["Snack 1", "Snack 2", "Snack 3"]
     
     private func timeSinceLastEat() -> (hours: Int, minutes: Int) {
         let timeInterval = entry.date.timeIntervalSince(entry.lastEatDate)
@@ -299,6 +299,6 @@ struct SixEatsWidget: Widget {
 #Preview(as: .systemMedium) {
     SixEatsWidget()
 } timeline: {
-    SimpleEntry(date: .now, lastEatDate: Calendar.current.date(byAdding: .hour, value: -2, to: .now)!, checkedItems: ["Breakfast", "Morning snack"])
+    SimpleEntry(date: .now, lastEatDate: Calendar.current.date(byAdding: .hour, value: -2, to: .now)!, checkedItems: ["Breakfast", "Snack 1"])
     SimpleEntry(date: .now, lastEatDate: Calendar.current.date(byAdding: .hour, value: -3, to: .now)!, checkedItems: ["Breakfast"])
 }
