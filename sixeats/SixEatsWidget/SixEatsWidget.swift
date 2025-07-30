@@ -1,9 +1,3 @@
-//
-//  SixEatsWidget.swift
-//  SixEatsWidget
-//
-//  Created by Paavan Buddhdev on 02/07/2025.
-//
 
 import WidgetKit
 import SwiftUI
@@ -196,11 +190,30 @@ struct ToggleMealIntent: AppIntent {
     }
 }
 
+private struct CheckboxView: View {
+    let meal: String
+    let isChecked: Bool
+    
+    var body: some View {
+        Button(intent: ToggleMealIntent(mealItem: meal)) {
+            HStack(spacing: 4) {
+                Image(systemName: isChecked ? "circle.fill" : "circle")
+                    .font(.system(size: 13))
+                    .foregroundColor(Color(red: 1, green: 59/255, blue: 47/255))
+                
+                Text(meal)
+                    .font(.system(size: 13, weight: .medium, design: .default))
+                    .strikethrough(isChecked, color: Color(red: 1, green: 59/255, blue: 47/255))
+                    .foregroundColor(Color(red: 1, green: 59/255, blue: 47/255))
+                    .opacity(isChecked ? 0.4 : 1.0)
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+}
+
 struct SixEatsWidgetEntryView : View {
     var entry: Provider.Entry
-    
-    private let mainMeals = ["Breakfast", "Lunch", "Dinner"]
-    private let snacks = ["Snack 1", "Snack 2", "Snack 3"]
     
     private func timeSinceLastEat() -> (hours: Int, minutes: Int) {
         let timeInterval = entry.date.timeIntervalSince(entry.lastEatDate)
@@ -210,116 +223,61 @@ struct SixEatsWidgetEntryView : View {
         return (hours, minutes)
     }
     
-    private func shouldShowGoEat() -> Bool {
-        let timeSince = timeSinceLastEat()
-        return timeSince.hours >= 4 || (timeSince.hours == 3 && timeSince.minutes >= 30)
+    private func isChecked(_ item: String) -> Bool {
+        entry.checkedItems.contains(item)
     }
-
+    
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
-                // Main content with 3 columns
-                HStack(spacing: 16) {
-                    // First column - Time since last eat
-                    VStack(spacing: 4) {
-                        Spacer()
-                        let timeSince = timeSinceLastEat()
+        Grid(alignment: .leading, horizontalSpacing: 30, verticalSpacing: 27) {
+            GridRow {
+                VStack(alignment: .leading, spacing: 2) {
+                    Spacer()
+                    
+                    let timeSince = timeSinceLastEat()
+                    
+                    HStack(spacing: 4) {
+                        Text("\(timeSince.hours)h \(timeSince.minutes)m")
+                            .font(.system(size: 19, weight: .medium, design: .default))
+                            .foregroundColor(.black)
                         
-                        if shouldShowGoEat() {
-                            HStack(spacing: 4) {
-                                Text("Go eat!")
-                                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                                    .foregroundColor(.red)
-                                
-                                Button(intent: RefreshIntent()) {
-                                    Image(systemName: "arrow.clockwise")
-                                        .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.secondary)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                            
-                            Text("\(timeSince.hours)h \(timeSince.minutes)m")
-                                .font(.system(size: 10, weight: .medium))
+                        Button(intent: RefreshIntent()) {
+                            Image(systemName: "arrow.clockwise")
+                                .font(.system(size: 12, weight: .medium))
                                 .foregroundColor(.secondary)
-                        } else {
-                            HStack(spacing: 4) {
-                                Text("\(timeSince.hours)h \(timeSince.minutes)m")
-                                    .font(.system(size: 20, weight: .bold, design: .rounded))
-                                    .foregroundColor(.primary)
-                                
-                                Button(intent: RefreshIntent()) {
-                                    Image(systemName: "arrow.clockwise")
-                                        .font(.system(size: 12, weight: .medium))
-                                        .foregroundColor(.secondary)
-                                }
-                                .buttonStyle(PlainButtonStyle())
-                            }
-                            
-                            Text("since you last ate")
-                                .font(.system(size: 10, weight: .medium))
-                                .foregroundColor(.secondary)
-                                .multilineTextAlignment(.center)
                         }
+                        .buttonStyle(PlainButtonStyle())
                     }
-                    .frame(maxWidth: .infinity)
                     
-                    // Second column - Main meals
-                    VStack(spacing: 12) {
-                        ForEach(mainMeals, id: \.self) { meal in
-                            let isChecked = entry.checkedItems.contains(meal)
-                            
-                            Button(intent: ToggleMealIntent(mealItem: meal)) {
-                                HStack(spacing: 6) {
-                                    Circle()
-                                        .fill(isChecked ? Color.red : Color.clear)
-                                        .stroke(Color.red, lineWidth: 2)
-                                        .frame(width: 14, height: 14)
-                                    
-                                    Text(meal)
-                                        .font(.system(size: 11, weight: .medium))
-                                        .foregroundColor(isChecked ? .secondary : .primary)
-                                        .strikethrough(isChecked)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
-                    
-                    // Third column - Snacks
-                    VStack(spacing: 12) {
-                        ForEach(snacks, id: \.self) { snack in
-                            let isChecked = entry.checkedItems.contains(snack)
-                            
-                            Button(intent: ToggleMealIntent(mealItem: snack)) {
-                                HStack(spacing: 6) {
-                                    Circle()
-                                        .fill(isChecked ? Color.red : Color.clear)
-                                        .stroke(Color.red, lineWidth: 2)
-                                        .frame(width: 14, height: 14)
-                                    
-                                    Text(snack)
-                                        .font(.system(size: 11, weight: .medium))
-                                        .foregroundColor(isChecked ? .secondary : .primary)
-                                        .strikethrough(isChecked)
-                                }
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                        }
-                    }
-                    .frame(maxWidth: .infinity)
+                    Text("since you last ate")
+                        .font(.system(size: 10, weight: .medium, design: .default))
+                        .foregroundColor(.black)
+                        .opacity(0.5)
                 }
-                .padding(.horizontal, 4)
-                .padding(.vertical, 4)
+                .gridColumnAlignment(.leading)
                 
+                VStack(alignment: .leading, spacing: 27) {
+                    CheckboxView(meal: "Breakfast", isChecked: isChecked("Breakfast"))
+                    CheckboxView(meal: "Lunch", isChecked: isChecked("Lunch"))
+                    CheckboxView(meal: "Dinner", isChecked: isChecked("Dinner"))
+                }
+                .gridColumnAlignment(.leading)
+                
+                VStack(alignment: .leading, spacing: 27) {
+                    CheckboxView(meal: "Snack 1", isChecked: isChecked("Snack 1"))
+                    CheckboxView(meal: "Snack 2", isChecked: isChecked("Snack 2"))
+                    CheckboxView(meal: "Snack 3", isChecked: isChecked("Snack 3"))
+                }
+                .gridColumnAlignment(.leading)
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 6)
+        .containerBackground(for: .widget) {
+            Color(red: 254/255, green: 254/255, blue: 254/255)
         }
     }
 }
+
 
 @available(iOS 17.0, *)
 struct SixEatsWidget: Widget {

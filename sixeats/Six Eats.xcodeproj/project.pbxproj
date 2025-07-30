@@ -38,7 +38,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		EB68BA652E14BF0100AE05C9 /* sixeats.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = sixeats.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EB68BA652E14BF0100AE05C9 /* Six Eats.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Six Eats.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBC82B452E14C00C001F155C /* SixEatsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SixEatsWidget.swift; sourceTree = "<group>"; };
 		EBC82B4B2E14C02B001F155C /* SixEatsWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SixEatsWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBC82B4D2E14C02B001F155C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
@@ -105,7 +105,7 @@
 		EB68BA662E14BF0100AE05C9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EB68BA652E14BF0100AE05C9 /* sixeats.app */,
+				EB68BA652E14BF0100AE05C9 /* Six Eats.app */,
 				EBC82B4B2E14C02B001F155C /* SixEatsWidgetExtension.appex */,
 			);
 			name = Products;
@@ -131,9 +131,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		EB68BA642E14BF0100AE05C9 /* sixeats */ = {
+		EB68BA642E14BF0100AE05C9 /* Six Eats */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = EB68BA702E14BF0200AE05C9 /* Build configuration list for PBXNativeTarget "sixeats" */;
+			buildConfigurationList = EB68BA702E14BF0200AE05C9 /* Build configuration list for PBXNativeTarget "Six Eats" */;
 			buildPhases = (
 				EB68BA612E14BF0100AE05C9 /* Sources */,
 				EB68BA622E14BF0100AE05C9 /* Frameworks */,
@@ -148,11 +148,11 @@
 			fileSystemSynchronizedGroups = (
 				EB68BA672E14BF0100AE05C9 /* SixEats */,
 			);
-			name = sixeats;
+			name = "Six Eats";
 			packageProductDependencies = (
 			);
 			productName = sixeats;
-			productReference = EB68BA652E14BF0100AE05C9 /* sixeats.app */;
+			productReference = EB68BA652E14BF0100AE05C9 /* Six Eats.app */;
 			productType = "com.apple.product-type.application";
 		};
 		EBC82B4A2E14C02B001F155C /* SixEatsWidgetExtension */ = {
@@ -186,6 +186,7 @@
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1640;
+				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					EB68BA642E14BF0100AE05C9 = {
 						CreatedOnToolsVersion = 16.4;
@@ -195,7 +196,7 @@
 					};
 				};
 			};
-			buildConfigurationList = EB68BA602E14BF0100AE05C9 /* Build configuration list for PBXProject "sixeats" */;
+			buildConfigurationList = EB68BA602E14BF0100AE05C9 /* Build configuration list for PBXProject "Six Eats" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -209,7 +210,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				EB68BA642E14BF0100AE05C9 /* sixeats */,
+				EB68BA642E14BF0100AE05C9 /* Six Eats */,
 				EBC82B4A2E14C02B001F155C /* SixEatsWidgetExtension */,
 			);
 		};
@@ -399,7 +400,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.paavandesign.sixeats;
+				PRODUCT_BUNDLE_IDENTIFIER = com.paavandesign.sixeats.v2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -429,7 +430,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.paavandesign.sixeats;
+				PRODUCT_BUNDLE_IDENTIFIER = com.paavandesign.sixeats.v2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -456,7 +457,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.paavandesign.sixeats.SixEatsWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.paavandesign.sixeats.v2.SixEatsWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -483,7 +484,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.paavandesign.sixeats.SixEatsWidget;
+				PRODUCT_BUNDLE_IDENTIFIER = com.paavandesign.sixeats.v2.SixEatsWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -495,7 +496,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		EB68BA602E14BF0100AE05C9 /* Build configuration list for PBXProject "sixeats" */ = {
+		EB68BA602E14BF0100AE05C9 /* Build configuration list for PBXProject "Six Eats" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EB68BA6E2E14BF0200AE05C9 /* Debug */,
@@ -504,7 +505,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		EB68BA702E14BF0200AE05C9 /* Build configuration list for PBXNativeTarget "sixeats" */ = {
+		EB68BA702E14BF0200AE05C9 /* Build configuration list for PBXNativeTarget "Six Eats" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				EB68BA712E14BF0200AE05C9 /* Debug */,
