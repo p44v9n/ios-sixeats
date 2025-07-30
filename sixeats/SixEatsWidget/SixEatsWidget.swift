@@ -238,7 +238,7 @@ struct SixEatsWidgetEntryView : View {
                     HStack(spacing: 4) {
                         Text("\(timeSince.hours)h \(timeSince.minutes)m")
                             .font(.system(size: 19, weight: .medium, design: .default))
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                         
                         Button(intent: RefreshIntent()) {
                             Image(systemName: "arrow.clockwise")
@@ -250,7 +250,7 @@ struct SixEatsWidgetEntryView : View {
                     
                     Text("since you last ate")
                         .font(.system(size: 10, weight: .medium, design: .default))
-                        .foregroundColor(.black)
+                        .foregroundColor(.primary)
                         .opacity(0.5)
                 }
                 .gridColumnAlignment(.leading)
@@ -273,7 +273,7 @@ struct SixEatsWidgetEntryView : View {
         .padding(.horizontal, 6)
         .padding(.vertical, 6)
         .containerBackground(for: .widget) {
-            Color(red: 254/255, green: 254/255, blue: 254/255)
+            Color(.systemBackground)
         }
     }
 }
