@@ -244,7 +244,7 @@ struct BottomSheetView: View {
             // Drag handle
         
             RoundedRectangle(cornerRadius: 3)
-                .fill(Color.black)
+                .fill(Color.primary)
                 .frame(width: 154, height: 4)
                 .padding(.top, 28)
             
