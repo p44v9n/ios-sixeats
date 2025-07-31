@@ -32,12 +32,14 @@ struct Provider: AppIntentTimelineProvider {
         let lastEatDate = dataManager.loadLastEatDate() ?? Calendar.current.date(byAdding: .hour, value: -1, to: currentDate) ?? currentDate
         let checkedItems = dataManager.loadCheckedItems()
         
-        // Create fewer entries to reduce processing time
+        // Create timeline entries for more frequent updates
         var entries: [SimpleEntry] = []
+        entries.reserveCapacity(120) // Pre-allocate for performance
 
-        // Create entries every 15 minutes for the next 2 hours (8 entries total)
-        for minuteOffset in stride(from: 0, to: 120, by: 15) {
-            let entryDate = Calendar.current.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
+        // Create entries every minute for the next 2 hours (120 entries total)
+        let calendar = Calendar.current
+        for minuteOffset in stride(from: 0, to: 120, by: 1) {
+            let entryDate = calendar.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
             let entry = SimpleEntry(date: entryDate, lastEatDate: lastEatDate, checkedItems: checkedItems)
             entries.append(entry)
         }
@@ -153,17 +155,6 @@ struct DataManager {
     }
 }
 
-@available(iOS 17.0, *)
-struct RefreshIntent: AppIntent {
-    static var title: LocalizedStringResource = "Refresh Widget"
-    static var description = IntentDescription("Refresh the widget to update the timer")
-    
-    func perform() async throws -> some IntentResult {
-        // Force widget to refresh immediately
-        WidgetCenter.shared.reloadTimelines(ofKind: "SixEatsWidget")
-        return .result()
-    }
-}
 
 @available(iOS 17.0, *)
 struct ToggleMealIntent: AppIntent {
@@ -181,10 +172,16 @@ struct ToggleMealIntent: AppIntent {
     
     func perform() async throws -> some IntentResult {
         let dataManager = DataManager()
+        let wasItemChecked = dataManager.loadCheckedItems().contains(mealItem)
         dataManager.toggleMealItem(mealItem)
         
-        // Force widget to refresh immediately after data changes
-        WidgetCenter.shared.reloadTimelines(ofKind: "SixEatsWidget")
+        // Only reload timeline when checking an item (timer reset)
+        // Unchecking items doesn't need immediate widget update
+        if !wasItemChecked {
+            Task.detached {
+                WidgetCenter.shared.reloadTimelines(ofKind: "SixEatsWidget")
+            }
+        }
         
         return .result()
     }
@@ -235,18 +232,9 @@ struct SixEatsWidgetEntryView : View {
                     
                     let timeSince = timeSinceLastEat()
                     
-                    HStack(spacing: 4) {
-                        Text("\(timeSince.hours)h \(timeSince.minutes)m")
-                            .font(.system(size: 19, weight: .medium, design: .default))
-                            .foregroundColor(.primary)
-                        
-                        Button(intent: RefreshIntent()) {
-                            Image(systemName: "arrow.clockwise")
-                                .font(.system(size: 12, weight: .medium))
-                                .foregroundColor(.secondary)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
+                    Text("\(timeSince.hours)h \(timeSince.minutes)m")
+                        .font(.system(size: 19, weight: .medium, design: .default))
+                        .foregroundColor(.primary)
                     
                     Text("since you last ate")
                         .font(.system(size: 10, weight: .medium, design: .default))
@@ -270,7 +258,7 @@ struct SixEatsWidgetEntryView : View {
                 .gridColumnAlignment(.leading)
             }
         }
-        .padding(.horizontal, 6)
+        .padding(.horizontal, 2)
         .padding(.vertical, 6)
         .containerBackground(for: .widget) {
             Color(.systemBackground)
