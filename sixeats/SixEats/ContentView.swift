@@ -24,6 +24,7 @@ struct ContentView: View {
 struct OnboardingScreen: View {
     let screenIndex: Int
     let onNext: () -> Void
+    @Environment(\.colorScheme) var colorScheme
     
     var body: some View {
         ZStack {
@@ -33,30 +34,32 @@ struct OnboardingScreen: View {
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
             
-            VStack(spacing: 0) {
-                // Top spacer
+            // 70% black overlay for dark mode visibility
+            if colorScheme == .dark {
+                Rectangle()
+                    .fill(Color.black.opacity(0.7))
+                    .ignoresSafeArea()
+            }
+            
+            VStack(spacing: 24) {
                 Spacer()
-                
+                    
                 // Icon
-                Image(systemName: iconName)
-                    .font(.system(size: 60, weight: .light))
-                    .foregroundColor(.white)
+                VStack(spacing: 24){
+                    Image(systemName: iconName)
+                        .font(.system(size: 60, weight: .light))
+                        .foregroundColor(.white)
                 
-                // Middle spacer
-                Spacer()
-                
-                // Text content
-                VStack(spacing: 20) {
                     Text(titleText)
                         .font(.title2)
                         .fontWeight(.medium)
                         .foregroundColor(.white)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 40)
-                        .lineLimit(nil)
+                        .lineLimit(4)
                 }
                 
-                // Bottom spacer
+                
                 Spacer()
                 
                 // Button
@@ -71,7 +74,7 @@ struct OnboardingScreen: View {
                         .cornerRadius(12)
                 }
                 .padding(.horizontal, 40)
-                .padding(.bottom, 50)
+                .padding(.bottom, 120)
             }
         }
     }
@@ -100,7 +103,7 @@ struct OnboardingScreen: View {
     
     private var titleText: String {
         switch screenIndex {
-        case 0: return "It may seem strange, but eating six times a day can actually help you feel more in control."
+        case 0: return "It may seem strange, but eating six times a day can help you feel more in control."
         case 1: return "Regular meals keep your hunger levels steady, so cravings don't take over."
         case 2: return "Over time, this builds trust with your body and brings calm to how you eat."
         default: return ""
@@ -112,7 +115,11 @@ struct OnboardingScreen: View {
     }
     
     private var buttonBackgroundColor: Color {
-        Color.white.opacity(0.9)
+        if colorScheme == .dark {
+            return Color.secondary
+        } else {
+            return Color.white
+        }
     }
     
     private var buttonTextColor: Color {
@@ -132,6 +139,7 @@ struct WidgetInstructionView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 0) {
+
                 // Header text
                 VStack(spacing: 4) {
                     Text("Add the widget")
@@ -144,7 +152,9 @@ struct WidgetInstructionView: View {
                         .fontWeight(.regular)
                         .foregroundColor(.white)
                 }
-                .padding(.top, 68)
+//                .padding(.top, 68)
+                // if iPhone SE
+                .padding(.top, 120)
                 
                 Spacer()
                 
@@ -170,7 +180,7 @@ struct WidgetInstructionView: View {
                         .cornerRadius(12)
                 }
                 .padding(.horizontal, 35)
-                .padding(.bottom, 50)
+                .padding(.bottom, 120)
             }
         }
         .sheet(isPresented: $showBottomSheet) {
@@ -232,6 +242,7 @@ struct BottomSheetView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Drag handle
+        
             RoundedRectangle(cornerRadius: 3)
                 .fill(Color.black)
                 .frame(width: 154, height: 4)
@@ -243,7 +254,7 @@ struct BottomSheetView: View {
             Text("How to add the widget")
                 .font(.title3)
                 .fontWeight(.medium)
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
                 .padding(.bottom, 40)
             
             // Instructions list
@@ -254,30 +265,10 @@ struct BottomSheetView: View {
             }
             .padding(.horizontal, 24)
             
-            // // Additional tip for iOS 18
-            // if isIOS18OrLater {
-            //     VStack(alignment: .leading, spacing: 8) {
-            //         HStack {
-            //             Image(systemName: "lightbulb")
-            //                 .foregroundColor(.orange)
-            //                 .font(.caption)
-            //             Text("Quick tip:")
-            //                 .font(.caption)
-            //                 .fontWeight(.medium)
-            //                 .foregroundColor(.gray)
-            //         }
-            //         Text("You can also long press directly on the SixEats app icon and select a widget size to instantly add it!")
-            //             .font(.caption)
-            //             .foregroundColor(.gray)
-            //             .multilineTextAlignment(.leading)
-            //     }
-            //     .padding(.horizontal, 24)
-            //     .padding(.top, 20)
-            // }
             
             Spacer()
         }
-        .background(Color.white)
+        .background(Color(UIColor.systemBackground))
         .cornerRadius(40, corners: [.topLeft, .topRight])
     }
 }
@@ -291,13 +282,13 @@ struct InstructionItem: View {
             Text("\(number).")
                 .font(.title3)
                 .fontWeight(.medium)
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
                 .frame(width: 20, alignment: .leading)
             
             Text(text)
                 .font(.title3)
                 .fontWeight(.regular)
-                .foregroundColor(.black)
+                .foregroundColor(.primary)
                 .multilineTextAlignment(.leading)
             
             Spacer()
