@@ -65,7 +65,7 @@ struct DataManager {
     
     func loadLastEatDate() -> Date? {
         guard let userDefaults = userDefaults else { 
-            print("⚠️ Widget: Unable to access app group UserDefaults")
+            // print("⚠️ Widget: Unable to access app group UserDefaults")
             return nil 
         }
         return userDefaults.object(forKey: "lastEatDate") as? Date
@@ -73,7 +73,7 @@ struct DataManager {
     
     func loadCheckedItems() -> [String] {
         guard let userDefaults = userDefaults else { 
-            print("⚠️ Widget: Unable to access app group UserDefaults")
+            // print("⚠️ Widget: Unable to access app group UserDefaults")
             return [] 
         }
         checkAndResetIfNewDay()
@@ -82,7 +82,7 @@ struct DataManager {
     
     func saveLastEatDate(_ date: Date) {
         guard let userDefaults = userDefaults else {
-            print("⚠️ Widget: Unable to save to app group UserDefaults")
+            // print("⚠️ Widget: Unable to save to app group UserDefaults")
             return
         }
         userDefaults.set(date, forKey: "lastEatDate")
@@ -90,7 +90,7 @@ struct DataManager {
     
     func saveCheckedItems(_ items: [String]) {
         guard let userDefaults = userDefaults else {
-            print("⚠️ Widget: Unable to save to app group UserDefaults")
+            // print("⚠️ Widget: Unable to save to app group UserDefaults")
             return
         }
         userDefaults.set(items, forKey: "checkedItems")
@@ -98,7 +98,7 @@ struct DataManager {
     
     func toggleMealItem(_ item: String) {
         guard let userDefaults = userDefaults else {
-            print("⚠️ Widget: Unable to access app group UserDefaults")
+            // print("⚠️ Widget: Unable to access app group UserDefaults")
             return
         }
         
@@ -118,7 +118,7 @@ struct DataManager {
     
     private func checkAndResetIfNewDay() {
         guard let userDefaults = userDefaults else {
-            print("⚠️ Widget: Unable to access app group UserDefaults for reset check")
+            // print("⚠️ Widget: Unable to access app group UserDefaults for reset check")
             return
         }
         
@@ -141,7 +141,7 @@ struct DataManager {
     
     private func resetForNewDay() {
         guard let userDefaults = userDefaults else {
-            print("⚠️ Widget: Unable to access app group UserDefaults for reset")
+            // print("⚠️ Widget: Unable to access app group UserDefaults for reset")
             return
         }
         
@@ -151,7 +151,7 @@ struct DataManager {
         userDefaults.set(Date(), forKey: "lastResetDate")
         userDefaults.synchronize()
         
-        print("📅 Widget: Reset checked items for new calendar day")
+        // print("📅 Widget: Reset checked items for new calendar day")
     }
 }
 
