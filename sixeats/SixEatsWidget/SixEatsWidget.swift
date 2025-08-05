@@ -71,28 +71,15 @@ struct ToggleMealIntent: AppIntent {
     }
     
     func perform() async throws -> some IntentResult {
-        let dataManager = DataManager.shared
+        // Perform the toggle operation synchronously for immediate update
+        DataManager.shared.toggleImmediately(meal: mealItem)
         
-        // Perform the toggle operation
-        dataManager.toggle(meal: mealItem)
-        
-        // Immediately request timeline reload for responsive UI
-        // Use detached task to not block the intent completion
-        Task.detached(priority: .userInitiated) {
+        // Immediately reload timeline on main queue for fastest possible update
+        await MainActor.run {
             WidgetCenter.shared.reloadTimelines(ofKind: "SixEatsWidget")
         }
         
         return .result()
-    }
-}
-
-// Custom button style for optimistic UI feedback
-private struct OptimisticButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
-            .opacity(configuration.isPressed ? 0.6 : 1.0)
-            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
@@ -114,7 +101,7 @@ private struct CheckboxView: View {
                     .opacity(isChecked ? 0.4 : 1.0)
             }
         }
-        .buttonStyle(OptimisticButtonStyle())
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

@@ -10,7 +10,6 @@
 		EBC82B4E2E14C02B001F155C /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBC82B4D2E14C02B001F155C /* WidgetKit.framework */; };
 		EBC82B502E14C02B001F155C /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EBC82B4F2E14C02B001F155C /* SwiftUI.framework */; };
 		EBC82B5B2E14C02C001F155C /* SixEatsWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = EBC82B4B2E14C02B001F155C /* SixEatsWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		EBC82B612E14C034001F155C /* SixEatsWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBC82B452E14C00C001F155C /* SixEatsWidget.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,7 +38,6 @@
 
 /* Begin PBXFileReference section */
 		EB68BA652E14BF0100AE05C9 /* Six Eats.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Six Eats.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		EBC82B452E14C00C001F155C /* SixEatsWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SixEatsWidget.swift; sourceTree = "<group>"; };
 		EBC82B4B2E14C02B001F155C /* SixEatsWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SixEatsWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBC82B4D2E14C02B001F155C /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		EBC82B4F2E14C02B001F155C /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -104,7 +102,6 @@
 		EB68BA5C2E14BF0100AE05C9 = {
 			isa = PBXGroup;
 			children = (
-				EB68BA7E2E14BF6400AE05C9 /* SixEatsWidget */,
 				EB68BA672E14BF0100AE05C9 /* SixEats */,
 				EBC82B512E14C02B001F155C /* SixEatsWidget */,
 				EBC82B4C2E14C02B001F155C /* Frameworks */,
@@ -119,14 +116,6 @@
 				EBC82B4B2E14C02B001F155C /* SixEatsWidgetExtension.appex */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		EB68BA7E2E14BF6400AE05C9 /* SixEatsWidget */ = {
-			isa = PBXGroup;
-			children = (
-				EBC82B452E14C00C001F155C /* SixEatsWidget.swift */,
-			);
-			path = SixEatsWidget;
 			sourceTree = "<group>";
 		};
 		EBC82B4C2E14C02B001F155C /* Frameworks */ = {
@@ -255,7 +244,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EBC82B612E14C034001F155C /* SixEatsWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,9 +1,10 @@
 
 import Foundation
+import CoreFoundation
 
 struct DataManager {
     static let shared = DataManager()
-    private let userDefaults = UserDefaults(suiteName: "group.com.example.SixEats")
+    private let userDefaults = UserDefaults(suiteName: "group.com.paavandesign.SixEats")
 
     private let lastEatDateKey = "lastEatDate"
     private let checkedItemsKey = "checkedItems"
@@ -45,10 +46,36 @@ struct DataManager {
         userDefaults?.synchronize() // Force immediate sync for widget updates
     }
     
+    // Ultra-fast toggle method for immediate widget updates
+    func toggleImmediately(meal: String) {
+        guard let userDefaults = userDefaults else { return }
+        
+        // Skip day reset check for speed - handle it on next regular toggle
+        var items = userDefaults.stringArray(forKey: checkedItemsKey) ?? []
+        
+        // Toggle the item
+        if let index = items.firstIndex(of: meal) {
+            items.remove(at: index)
+        } else {
+            items.append(meal)
+        }
+        
+        // Immediate synchronous updates - no batching delay
+        let currentDate = Date()
+        userDefaults.set(items, forKey: checkedItemsKey)
+        userDefaults.set(currentDate, forKey: lastEatDateKey)
+        
+        // Force immediate disk write - critical for widget updates
+        userDefaults.synchronize()
+        
+    }
+    
     private func checkAndResetIfNewDay() {
         guard let userDefaults = userDefaults else { return }
         
         let today = Date()
+        
+        // Get the last reset date
         let lastResetDate = userDefaults.object(forKey: lastResetDateKey) as? Date
         
         // If no reset date exists, or if it's a new calendar day, reset the checked items
@@ -63,12 +90,10 @@ struct DataManager {
     }
     
     private func resetForNewDay() {
-        guard let userDefaults = userDefaults else { return }
-        
-        // Clear checked items for the new day and update reset date
-        let today = Date()
-        userDefaults.set([], forKey: checkedItemsKey)
-        userDefaults.set(today, forKey: lastResetDateKey)
-        userDefaults.synchronize()
+        // Clear checked items for the new day
+        userDefaults?.set([], forKey: checkedItemsKey)
+        // Update the last reset date
+        userDefaults?.set(Date(), forKey: lastResetDateKey)
+        userDefaults?.synchronize()
     }
 }
