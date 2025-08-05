@@ -28,7 +28,7 @@ struct Provider: AppIntentTimelineProvider {
         let currentDate = Date()
         
         // Try to load data, but use defaults if it fails or times out
-        let dataManager = DataManager()
+        let dataManager = DataManager.shared
         let lastEatDate = dataManager.loadLastEatDate() ?? Calendar.current.date(byAdding: .hour, value: -1, to: currentDate) ?? currentDate
         let checkedItems = dataManager.loadCheckedItems()
         
@@ -56,104 +56,7 @@ struct SimpleEntry: TimelineEntry {
     let checkedItems: [String]
 }
 
-struct DataManager {
-    private let userDefaults: UserDefaults?
-    
-    init() {
-        self.userDefaults = UserDefaults(suiteName: "group.com.example.SixEats")
-    }
-    
-    func loadLastEatDate() -> Date? {
-        guard let userDefaults = userDefaults else { 
-            // print("⚠️ Widget: Unable to access app group UserDefaults")
-            return nil 
-        }
-        return userDefaults.object(forKey: "lastEatDate") as? Date
-    }
-    
-    func loadCheckedItems() -> [String] {
-        guard let userDefaults = userDefaults else { 
-            // print("⚠️ Widget: Unable to access app group UserDefaults")
-            return [] 
-        }
-        checkAndResetIfNewDay()
-        return userDefaults.stringArray(forKey: "checkedItems") ?? []
-    }
-    
-    func saveLastEatDate(_ date: Date) {
-        guard let userDefaults = userDefaults else {
-            // print("⚠️ Widget: Unable to save to app group UserDefaults")
-            return
-        }
-        userDefaults.set(date, forKey: "lastEatDate")
-    }
-    
-    func saveCheckedItems(_ items: [String]) {
-        guard let userDefaults = userDefaults else {
-            // print("⚠️ Widget: Unable to save to app group UserDefaults")
-            return
-        }
-        userDefaults.set(items, forKey: "checkedItems")
-    }
-    
-    func toggleMealItem(_ item: String) {
-        guard let userDefaults = userDefaults else {
-            // print("⚠️ Widget: Unable to access app group UserDefaults")
-            return
-        }
-        
-        var checkedItems = loadCheckedItems()
-        if checkedItems.contains(item) {
-            checkedItems.removeAll { $0 == item }
-        } else {
-            checkedItems.append(item)
-            // Reset timer when checking an item
-            saveLastEatDate(Date())
-        }
-        saveCheckedItems(checkedItems)
-        
-        // Force immediate sync
-        userDefaults.synchronize()
-    }
-    
-    private func checkAndResetIfNewDay() {
-        guard let userDefaults = userDefaults else {
-            // print("⚠️ Widget: Unable to access app group UserDefaults for reset check")
-            return
-        }
-        
-        let calendar = Calendar.current
-        let today = Date()
-        
-        // Get the last reset date
-        let lastResetDate = userDefaults.object(forKey: "lastResetDate") as? Date
-        
-        // If no reset date exists, or if it's a new calendar day, reset the checked items
-        if let lastReset = lastResetDate {
-            if !calendar.isDate(today, inSameDayAs: lastReset) {
-                resetForNewDay()
-            }
-        } else {
-            // First time - set the reset date but don't clear items
-            userDefaults.set(today, forKey: "lastResetDate")
-        }
-    }
-    
-    private func resetForNewDay() {
-        guard let userDefaults = userDefaults else {
-            // print("⚠️ Widget: Unable to access app group UserDefaults for reset")
-            return
-        }
-        
-        // Clear checked items for the new day
-        userDefaults.set([], forKey: "checkedItems")
-        // Update the last reset date
-        userDefaults.set(Date(), forKey: "lastResetDate")
-        userDefaults.synchronize()
-        
-        // print("📅 Widget: Reset checked items for new calendar day")
-    }
-}
+
 
 
 @available(iOS 17.0, *)
@@ -171,9 +74,9 @@ struct ToggleMealIntent: AppIntent {
     }
     
     func perform() async throws -> some IntentResult {
-        let dataManager = DataManager()
+        let dataManager = DataManager.shared
         let wasItemChecked = dataManager.loadCheckedItems().contains(mealItem)
-        dataManager.toggleMealItem(mealItem)
+        dataManager.toggle(meal: mealItem)
         
         // Only reload timeline when checking an item (timer reset)
         // Unchecking items doesn't need immediate widget update

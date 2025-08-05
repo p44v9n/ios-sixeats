@@ -46,6 +46,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		EB7286C52E427B68000E69F4 /* Exceptions for "SixEats" folder in "SixEatsWidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				DataManager.swift,
+			);
+			target = EBC82B4A2E14C02B001F155C /* SixEatsWidgetExtension */;
+		};
 		EBC82B5C2E14C02C001F155C /* Exceptions for "SixEatsWidget" folder in "SixEatsWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -58,6 +65,9 @@
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EB68BA672E14BF0100AE05C9 /* SixEats */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EB7286C52E427B68000E69F4 /* Exceptions for "SixEats" folder in "SixEatsWidgetExtension" target */,
+			);
 			path = SixEats;
 			sourceTree = "<group>";
 		};

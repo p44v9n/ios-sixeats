@@ -26,6 +26,7 @@ struct DataManager {
         return userDefaults?.stringArray(forKey: checkedItemsKey) ?? []
     }
     
+    
     func toggle(meal: String) {
         var items = loadCheckedItems()
         if let index = items.firstIndex(of: meal) {
