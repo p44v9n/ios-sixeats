@@ -56,9 +56,6 @@ struct SimpleEntry: TimelineEntry {
     let checkedItems: [String]
 }
 
-
-
-
 @available(iOS 17.0, *)
 struct ToggleMealIntent: AppIntent {
     static var title: LocalizedStringResource = "Toggle Meal"
@@ -75,18 +72,27 @@ struct ToggleMealIntent: AppIntent {
     
     func perform() async throws -> some IntentResult {
         let dataManager = DataManager.shared
-        let wasItemChecked = dataManager.loadCheckedItems().contains(mealItem)
+        
+        // Perform the toggle operation
         dataManager.toggle(meal: mealItem)
         
-        // Only reload timeline when checking an item (timer reset)
-        // Unchecking items doesn't need immediate widget update
-        if !wasItemChecked {
-            Task.detached {
-                WidgetCenter.shared.reloadTimelines(ofKind: "SixEatsWidget")
-            }
+        // Immediately request timeline reload for responsive UI
+        // Use detached task to not block the intent completion
+        Task.detached(priority: .userInitiated) {
+            WidgetCenter.shared.reloadTimelines(ofKind: "SixEatsWidget")
         }
         
         return .result()
+    }
+}
+
+// Custom button style for optimistic UI feedback
+private struct OptimisticButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .opacity(configuration.isPressed ? 0.6 : 1.0)
+            .animation(.easeInOut(duration: 0.1), value: configuration.isPressed)
     }
 }
 
@@ -108,7 +114,7 @@ private struct CheckboxView: View {
                     .opacity(isChecked ? 0.4 : 1.0)
             }
         }
-        .buttonStyle(PlainButtonStyle())
+        .buttonStyle(OptimisticButtonStyle())
     }
 }
 

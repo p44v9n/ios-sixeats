@@ -1,9 +1,3 @@
-//
-//  SixEatsWidgetBundle.swift
-//  SixEatsWidget
-//
-//  Created by Paavan Buddhdev on 02/07/2025.
-//
 
 import WidgetKit
 import SwiftUI
