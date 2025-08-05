@@ -3,13 +3,13 @@ import WidgetKit
 import SwiftUI
 import AppIntents
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct ConfigurationAppIntent: WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Configuration"
     static var description = IntentDescription("Configure your Six Eats widget.")
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct Provider: AppIntentTimelineProvider {
     typealias Entry = SimpleEntry
     typealias Intent = ConfigurationAppIntent
@@ -56,7 +56,7 @@ struct SimpleEntry: TimelineEntry {
     let checkedItems: [String]
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct ToggleMealIntent: AppIntent {
     static var title: LocalizedStringResource = "Toggle Meal"
     static var description = IntentDescription("Toggle a meal item and reset timer")
@@ -157,13 +157,17 @@ struct SixEatsWidgetEntryView : View {
         .padding(.horizontal, 2)
         .padding(.vertical, 6)
         .containerBackground(for: .widget) {
+            #if os(macOS)
+            Color(.controlBackgroundColor)
+            #else
             Color(.systemBackground)
+            #endif
         }
     }
 }
 
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 struct SixEatsWidget: Widget {
     let kind: String = "SixEatsWidget"
 
@@ -175,10 +179,13 @@ struct SixEatsWidget: Widget {
         .configurationDisplayName("Six Eats")
         .description("Track your daily meals and eating schedule.")
         .supportedFamilies([.systemMedium])
+        #if os(macOS)
+        .contentMarginsDisabled()
+        #endif
     }
 }
 
-@available(iOS 17.0, *)
+@available(iOS 17.0, macOS 14.0, *)
 #Preview(as: .systemMedium) {
     SixEatsWidget()
 } timeline: {
