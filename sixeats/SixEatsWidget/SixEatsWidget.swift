@@ -24,30 +24,30 @@ struct Provider: AppIntentTimelineProvider {
         return SimpleEntry(date: Date(), lastEatDate: defaultDate, checkedItems: ["Breakfast"])
     }
     
-    func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
-        let currentDate = Date()
-        
-        // Try to load data, but use defaults if it fails or times out
-        let dataManager = DataManager.shared
-        let lastEatDate = dataManager.loadLastEatDate() ?? Calendar.current.date(byAdding: .hour, value: -1, to: currentDate) ?? currentDate
-        let checkedItems = dataManager.loadCheckedItems()
-        
-        // Create timeline entries for more frequent updates
-        var entries: [SimpleEntry] = []
-        entries.reserveCapacity(120) // Pre-allocate for performance
+func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
+    let currentDate = Date()
+    let dataManager = DataManager.shared
+    let lastEatDate = dataManager.loadLastEatDate() ?? currentDate
+    let checkedItems = dataManager.loadCheckedItems()
 
-        // Create entries every minute for the next 2 hours (120 entries total)
-        let calendar = Calendar.current
-        for minuteOffset in stride(from: 0, to: 120, by: 1) {
-            let entryDate = calendar.date(byAdding: .minute, value: minuteOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, lastEatDate: lastEatDate, checkedItems: checkedItems)
-            entries.append(entry)
-        }
+    var entries: [SimpleEntry] = []
+    
+    // Current entry
+    entries.append(
+      SimpleEntry(date: currentDate, lastEatDate: lastEatDate, checkedItems: checkedItems))
 
-        // Schedule a reload every 2 hours instead of 4
-        let nextReload = Calendar.current.date(byAdding: .hour, value: 2, to: currentDate)!
-        return Timeline(entries: entries, policy: .after(nextReload))
+    // Entries at 1, 3, and 5 minutes
+    for minuteOffset in [1, 3, 5] {
+      let entryDate = Calendar.current.date(
+        byAdding: .minute, value: minuteOffset, to: currentDate)!
+      entries.append(
+        SimpleEntry(date: entryDate, lastEatDate: lastEatDate, checkedItems: checkedItems))
     }
+
+    // Reload every 5 mins
+    let nextReload = Calendar.current.date(byAdding: .minute, value: 5, to: currentDate)!
+    return Timeline(entries: entries, policy: .after(nextReload))
+  }
 }
 
 struct SimpleEntry: TimelineEntry {
