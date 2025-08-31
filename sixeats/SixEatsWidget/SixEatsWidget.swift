@@ -120,22 +120,49 @@ struct SixEatsWidgetEntryView : View {
         entry.checkedItems.contains(item)
     }
     
+    private func isLastEatFromPreviousDay() -> Bool {
+        return !Calendar.current.isDate(entry.lastEatDate, inSameDayAs: entry.date)
+    }
+    
+    private func getReminderMessage() -> String {
+        let hour = Calendar.current.component(.hour, from: entry.date)
+        
+        switch hour {
+        case 5...11:
+            return "Remember to have breakfast"
+        case 12...17:
+            return "Remember to have lunch"
+        case 18...23:
+            return "Remember to have dinner"
+        default:
+            return "Remember to eat today"
+        }
+    }
+    
     var body: some View {
         Grid(alignment: .leading, horizontalSpacing: 30, verticalSpacing: 27) {
             GridRow {
                 VStack(alignment: .leading, spacing: 2) {
                     Spacer()
                     
-                    let timeSince = timeSinceLastEat()
-                    
-                    Text("\(timeSince.hours)h \(timeSince.minutes)m")
-                        .font(.system(size: 19, weight: .medium, design: .default))
-                        .foregroundColor(.primary)
-                    
-                    Text("since you last ate")
-                        .font(.system(size: 10, weight: .medium, design: .default))
-                        .foregroundColor(.primary)
-                        .opacity(0.5)
+                    if isLastEatFromPreviousDay() {
+                        Text(getReminderMessage())
+                            .font(.system(size: 14, weight: .medium, design: .default))
+                            .foregroundColor(.primary)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(2)
+                    } else {
+                        let timeSince = timeSinceLastEat()
+                        
+                        Text("\(timeSince.hours)h \(timeSince.minutes)m")
+                            .font(.system(size: 19, weight: .medium, design: .default))
+                            .foregroundColor(.primary)
+                        
+                        Text("since you last ate")
+                            .font(.system(size: 10, weight: .medium, design: .default))
+                            .foregroundColor(.primary)
+                            .opacity(0.5)
+                    }
                 }
                 .gridColumnAlignment(.leading)
                 
@@ -189,6 +216,8 @@ struct SixEatsWidget: Widget {
 #Preview(as: .systemMedium) {
     SixEatsWidget()
 } timeline: {
+    // Same day - shows timer
     SimpleEntry(date: .now, lastEatDate: Calendar.current.date(byAdding: .hour, value: -2, to: .now)!, checkedItems: ["Breakfast", "Snack 1"])
-    SimpleEntry(date: .now, lastEatDate: Calendar.current.date(byAdding: .hour, value: -3, to: .now)!, checkedItems: ["Breakfast"])
+    // Previous day - shows reminder message
+    SimpleEntry(date: .now, lastEatDate: Calendar.current.date(byAdding: .day, value: -1, to: .now)!, checkedItems: ["Breakfast"])
 }

@@ -17,6 +17,12 @@ struct DataManager {
     func loadLastEatDate() -> Date? {
         return userDefaults?.object(forKey: lastEatDateKey) as? Date
     }
+    
+    // Check if the last eat date was from a previous day
+    func isLastEatFromPreviousDay() -> Bool {
+        guard let lastEatDate = loadLastEatDate() else { return true }
+        return !Calendar.current.isDate(lastEatDate, inSameDayAs: Date())
+    }
 
     func save(checkedItems: [String]) {
         userDefaults?.set(checkedItems, forKey: checkedItemsKey)
